@@ -46,19 +46,23 @@ Antes de cada commit, Husky ejecuta:
 npx lint-staged
 ```
 
-`lint-staged` corre Biome sobre archivos staged (`*.js`, `*.ts`, `*.json`, etc.).
-Si hay errores de formato o lint, el commit se bloquea.
+**lint-staged ejecuta `biome check --write`** sobre archivos staged, que:
+- ✅ Arregla automáticamente formato (comillas, semicolons, indentación)
+- ✅ Detecta errores de lógica (variables no usadas) pero los bloquea (requieren corrección manual)
 
-## Flujo recomendado
+## Flujo recomendado (simplificado)
 
-1. Realiza tus cambios.
-2. Ejecuta:
+1. Haz tus cambios como prefieras
+2. Haz `git add .` y `git commit -m "mensaje"`
+3. **Husky ejecuta Biome automáticamente:**
+   - Si hay errores de formato → Biome los arregla automáticamente ✅
+   - Si hay errores de lógica → Se bloquea el commit (tú debes arreglarlo)
+
+**Si el commit falla por errores de lógica:**
 
 ```bash
-npm run format
-npm run check
+# Corrige manualmente los errores reportados
+# (ej: variables no usadas)
+git add .
+git commit -m "fix: corregir errores de lógica"
 ```
-
-3. Haz `git add .` y luego `git commit`.
-
-Si falla el commit, corrige los errores reportados por Biome y vuelve a intentar.
