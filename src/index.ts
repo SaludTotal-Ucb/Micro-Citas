@@ -28,10 +28,11 @@ AppDataSource.initialize()
     console.log('✅ Base de datos conectada a Supabase exitosamente.');
 
     // Inicializar rutas después de que TypeORM y los repositorios estén listos
-    app.use('/citas', initCitaRoutes());
+    app.use('/api/citas', initCitaRoutes()); // ← Añadido el prefijo /api
 
     // Ruta base (raíz) para comprobaciones de salud del servidor
-    app.get('/', (_req, res) => {
+    app.get('/api', (_req, res) => {
+      // ← También actualizada la ruta base opcional
       res.json({
         service: 'Micro-Citas API',
         status: 'UP',
