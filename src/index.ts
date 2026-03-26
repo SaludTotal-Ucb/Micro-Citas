@@ -19,6 +19,15 @@ AppDataSource.initialize()
     // Inicializar rutas después de que TypeORM y los repositorios estén listos
     app.use('/citas', initCitaRoutes());
 
+    // Ruta base (raíz) para comprobaciones de salud del servidor
+    app.get('/', (_req, res) => {
+      res.json({
+        service: 'Micro-Citas API',
+        status: 'UP',
+        timestamp: new Date().toISOString(),
+      });
+    });
+
     app.listen(PORT, () => {
       console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
     });
