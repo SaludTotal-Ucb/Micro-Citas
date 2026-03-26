@@ -37,6 +37,9 @@ export const setCitaRoutes = (citaController: CitaController) => {
     citaController.editarNotas(req, res),
   );
 
+  // PUT /citas/:id - Actualizar detalles generales de la cita (fecha, hora, clinica, etc)
+  router.put('/:id', (req, res) => citaController.actualizarDetalles(req, res));
+
   return router;
 };
 

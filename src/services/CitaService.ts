@@ -73,6 +73,25 @@ export class CitaService {
     return await this.citaRepo.save(cita);
   }
 
+  async actualizarCita(
+    id: string,
+    dataModificada: Partial<Cita>,
+  ): Promise<Cita> {
+    const cita = await this.citaRepo.findOne({ where: { id } });
+    if (!cita) throw new Error('Cita no encontrada');
+
+    // No permitimos actualizar el paciente (suele ser inmutable post-creación) o el ID
+    const {
+      id: _,
+      paciente_id,
+      created_at,
+      ...restoData
+    } = dataModificada as Partial<Cita> & Record<string, unknown>;
+
+    Object.assign(cita, restoData);
+    return await this.citaRepo.save(cita);
+  }
+
   async cambiarEstado(id: string, nuevoEstado: CitaEstado): Promise<Cita> {
     const cita = await this.citaRepo.findOne({ where: { id } });
     if (!cita) throw new Error('Cita no encontrada');
