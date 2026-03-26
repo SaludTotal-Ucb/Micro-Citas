@@ -19,13 +19,13 @@ export class Cita {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('uuid')
+  @Column('varchar')
   paciente_id!: string;
 
-  @Column('uuid')
+  @Column('varchar')
   medico_id!: string;
 
-  @Column('uuid')
+  @Column('varchar')
   clinica_id!: string;
 
   @Column({ type: 'varchar' })

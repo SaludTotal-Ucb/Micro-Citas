@@ -16,7 +16,7 @@ export class Penalizacion {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('uuid')
+  @Column('varchar')
   paciente_id!: string;
 
   @Column({ type: 'enum', enum: TipoPenalizacion })
