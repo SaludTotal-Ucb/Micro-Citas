@@ -101,7 +101,7 @@ export class CitaService {
       // Revisar si ya tiene 3 ausencias/cancelaciones tardías consecutivas
       const ultimasCitas = await this.citaRepo.find({
         where: { paciente_id: cita.paciente_id },
-        order: { created_at: 'DESC' },
+        order: { fecha: 'DESC', hora: 'DESC' },
         take: 3,
       });
 

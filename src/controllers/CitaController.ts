@@ -19,14 +19,7 @@ export class CitaController {
       const id = req.params.id as string;
       const citas = await this.citaService.listarPorPaciente(id);
 
-      // Devolver fecha y hora explicitamente como indica el requerimiento
-      const mapCitas = citas.map((c) => ({
-        ...c,
-        fecha: c.fecha,
-        hora: c.hora,
-      }));
-
-      res.status(200).json(mapCitas);
+      res.status(200).json(citas);
     } catch (error) {
       const err = error as Error;
       res.status(500).json({ error: err.message });
