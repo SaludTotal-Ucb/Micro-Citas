@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import type { CitaController } from '../controllers/CitaController';
+import { AppDataSource } from '../config/database';
+import { CitaController } from '../controllers/CitaController';
+import { Cita } from '../entities/Cita';
+import { Penalizacion } from '../entities/Penalizacion';
 import { CitaService } from '../services/CitaService';
-// Importa tus repositorios desde dataSource (Data Source de TypeORM)
-// import { AppDataSource } from '../config/database';
-// import { Cita } from '../entities/Cita';
-// import { Penalizacion } from '../entities/Penalizacion';
 
 const router = Router();
 
-// Para el ejemplo, instanciamos de forma ilustrativa. En tu proyecto inyectarías via AppDataSource
-// const citaService = new CitaService(AppDataSource.getRepository(Cita), AppDataSource.getRepository(Penalizacion));
-// const citaController = new CitaController(citaService);
+export const initCitaRoutes = (): Router => {
+  const citaRepo = AppDataSource.getRepository(Cita);
+  const penalizacionRepo = AppDataSource.getRepository(Penalizacion);
 
-// Mock controller setup para tipado y exportación limpia:
-export const setCitaRoutes = (citaController: CitaController) => {
+  const citaService = new CitaService(citaRepo, penalizacionRepo);
+  const citaController = new CitaController(citaService);
+
   // POST /citas - Agendar nueva cita
   router.post('/', (req, res) => citaController.crearCita(req, res));
 
