@@ -15,7 +15,17 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.10"
+    "lint-staged": "^15.2.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.28"
   }
 }
