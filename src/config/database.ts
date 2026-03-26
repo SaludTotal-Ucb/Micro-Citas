@@ -9,12 +9,16 @@ export const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: true, // ¡En producción cambia a false y usa migraciones!
-  logging: false,
+  logging: true, // Lo cambié a true momentáneamente para ver el ciclo de vida de la conexión
   entities: [Cita, Penalizacion],
   subscribers: [],
   migrations: [],
-  // Configuraciones recomendadas para conexiones en la nube como Supabase:
-  ssl: {
-    rejectUnauthorized: false,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+    // Añadidas opciones para mantener vivas las conexiones en el pooler de Supabase
+    keepAlive: true,
   },
+  // La propiedad ssl de nivel raíz a veces entra en conflicto con 'extra'
 });
