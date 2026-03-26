@@ -13,10 +13,10 @@ const PORT = process.env.PORT || 3000;
 // Habilitar peticiones desde el frontend (CORS)
 app.use(
   cors({
-    // Cuando tengas tu URL del frontend de producción reemplazala aquí
-    origin: '*',
+    origin: 'http://localhost:5174', // La URL de tu Frontend
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Habilitar si en el futuro envías cookies o tokens de sesión
   }),
 );
 
