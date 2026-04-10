@@ -117,15 +117,18 @@ export class CitaService {
       const fechaCita = new Date(`${cita.fecha}T${cita.hora}:00`);
       const diffMs = fechaCita.getTime() - ahora.getTime();
       const diffHoras = diffMs / (1000 * 60 * 60);
+      const lateCancellation = diffHoras < 3 && diffHoras > 0;
 
       // Si la cancelación es con menos de 3 horas de anticipación
-      if (diffHoras < 3 && diffHoras > 0) {
+      if (lateCancellation) {
         await this.crearPenalizacion(
           cita.paciente_id,
           TipoPenalizacion.LATE_CANCELLATION,
           30,
         );
       }
+
+      await this.registrarCancelacionEnHistorial(cita, lateCancellation);
     }
 
     if (nuevoEstado === CitaEstado.ABSENT) {
@@ -175,5 +178,43 @@ export class CitaService {
     });
 
     await this.penalizacionRepo.save(penalizacion);
+  }
+
+  private async registrarCancelacionEnHistorial(
+    cita: Cita,
+    lateCancellation: boolean,
+  ): Promise<void> {
+    const historialApiBase =
+      process.env.HISTORIAL_API_URL || 'http://historial-service:3002/api';
+
+    const payload = {
+      paciente_id: cita.paciente_id,
+      diagnostico: 'Cita cancelada',
+      severidad: lateCancellation ? 'moderado' : 'leve',
+      medico_encargado: cita.medico_id,
+      descripcion: `Cancelacion de cita de ${cita.especialidad} para ${cita.fecha} a las ${cita.hora}.`,
+      tratamiento: 'Sin tratamiento por cancelacion',
+      proxima_cita: cita.fecha,
+    };
+
+    try {
+      const response = await fetch(`${historialApiBase}/historial`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error(
+          'No se pudo registrar cancelacion en historial:',
+          errorBody,
+        );
+      }
+    } catch (error) {
+      console.error('Error enviando cancelacion a historial-service:', error);
+    }
   }
 }
