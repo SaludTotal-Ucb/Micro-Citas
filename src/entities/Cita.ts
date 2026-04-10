@@ -7,11 +7,11 @@ import {
 } from 'typeorm';
 
 export enum CitaEstado {
-  PENDING = 'pending',
-  CONFIRMED = 'confirmed',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-  ABSENT = 'absent', // Añadido para manejar el estado 'ausente'
+  PENDING = 'pending', //pendiente
+  CONFIRMED = 'confirmed', //confirmada
+  COMPLETED = 'completed', //completada
+  CANCELLED = 'cancelled', //cancelada
+  ABSENT = 'absent', // ausente
 }
 
 @Entity('citas')
