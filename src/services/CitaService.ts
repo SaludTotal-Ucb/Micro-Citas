@@ -1,4 +1,4 @@
-import { MoreThan, type Repository } from 'typeorm';
+import { In, MoreThan, type Repository } from 'typeorm';
 import { type Cita, CitaEstado } from '../entities/Cita';
 import { type Penalizacion, TipoPenalizacion } from '../entities/Penalizacion';
 
@@ -24,6 +24,22 @@ export class CitaService {
     if (penalizacionActiva) {
       throw new Error(
         `El paciente tiene una penalización activa hasta ${penalizacionActiva.fecha_fin}`,
+      );
+    }
+
+    // 1.5 Validar cupo ocupado: mismo médico, fecha y hora no puede duplicarse
+    const cupoOcupado = await this.citaRepo.findOne({
+      where: {
+        medico_id: data.medico_id,
+        fecha: data.fecha,
+        hora: data.hora,
+        estado: In([CitaEstado.PENDING, CitaEstado.CONFIRMED]),
+      },
+    });
+
+    if (cupoOcupado) {
+      throw new Error(
+        'El horario seleccionado ya esta ocupado para este medico',
       );
     }
 
