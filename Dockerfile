@@ -1,26 +1,31 @@
-# Imagen base de Node
-FROM node:20-alpine
+# --- Etapa de Build ---
+FROM node:20-alpine AS builder
 
-# Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Copiar archivos de dependencias primero para aprovechar el cache de capas
 COPY package*.json ./
+RUN npm ci
 
-# Instalar dependencias
-RUN npm install
-
-# Copiar todo el código
+# Copiar el resto del código y construir
 COPY . .
-
-# Compilar NestJS (esto genera la carpeta 'dist')
 RUN npm run build
 
-# Abrir el puerto 3000 (el puerto por defecto de NestJS)
+# --- Etapa de Producción ---
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instalar solo dependencias de producción
+COPY package*.json ./
+RUN npm ci --omit=dev --ignore-scripts
+
+# Copiar los archivos construidos desde la etapa anterior
+COPY --from=builder /app/dist ./dist
+
+# Configurar usuario no-root por seguridad
+USER node
+
 EXPOSE 3000
 
-RUN ls -la dist/index.js || echo "ALERTA: No se encontro el archivo index.js"
-
-
-# Comando para ejecutar la app compilada
 CMD ["node", "dist/index.js"]

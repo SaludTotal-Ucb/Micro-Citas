@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.git
+.gitignore
+.husky
+biome.json
+docs.md
+README.md
+# tsconfig.json (necesario para el build)
+# package-lock.json (necesario para npm ci)
