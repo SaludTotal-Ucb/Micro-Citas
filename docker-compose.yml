@@ -1,0 +1,22 @@
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: micro-citas-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: always
+
+  frontend:
+    build:
+      context: ../Frontend-ST
+      dockerfile: Dockerfile
+    container_name: frontend-st
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: always
