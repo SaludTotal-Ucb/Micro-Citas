@@ -1,26 +1,18 @@
-# Imagen base de Node
-FROM node:20-alpine
-
-# Carpeta de trabajo dentro del contenedor
+# Etapa 1: Construcción (compilar TypeScript a JavaScript)
+FROM node:18-alpine AS builder
 WORKDIR /app
-
-# Copiar archivos de dependencias
 COPY package*.json ./
-
-# Instalar dependencias
-RUN npm install
-
-# Copiar todo el código
+# Evitamos que husky intente instalar git hooks en el contenedor
+RUN npm install --ignore-scripts
 COPY . .
-
-# Compilar NestJS (esto genera la carpeta 'dist')
 RUN npm run build
 
-# Abrir el puerto 3000 (el puerto por defecto de NestJS)
+# Etapa 2: Producción (imagen más ligera)
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+# Solo instalamos dependencias de producción y omitimos scripts
+RUN npm install --omit=dev --ignore-scripts
+COPY --from=builder /app/dist ./dist
 EXPOSE 3000
-
-RUN ls -la dist/index.js || echo "ALERTA: No se encontro el archivo index.js"
-
-
-# Comando para ejecutar la app compilada
-CMD ["node", "dist/index.js"]
+CMD ["npm", "start"]
